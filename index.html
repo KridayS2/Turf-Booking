@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurfSync | Sports Turf & Court Booking Platform</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">⚡</div>
+        <div>Turf<span>Sync</span></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="venues.html" class="nav-link">Explore Venues</a></li>
+        <li><a href="booking.html?venue=venue-1" class="nav-link">Book Turf</a></li>
+        <li><a href="my-bookings.html" class="nav-link">My Bookings</a></li>
+        <li><a href="admin-dashboard.html" class="nav-link" style="color:var(--primary);">Facility Owner Portal &rarr;</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="venues.html" class="btn btn-primary">Find a Court</a>
+        <button class="mobile-menu-btn" aria-label="Toggle menu">&#9776;</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header style="background:linear-gradient(180deg, var(--secondary) 0%, #090e1a 100%);color:var(--text-inverse);padding:5rem 0 4rem;position:relative;overflow:hidden;">
+    <div class="container">
+      <div style="max-width:760px;margin:0 auto;text-align:center;">
+        <span class="badge badge-green" style="margin-bottom:1.25rem;">24/7 Real-Time Court Availability</span>
+        <h1 style="font-size:3rem;font-weight:800;line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.25rem;">
+          Instant Sports Turf Booking & Court Management
+        </h1>
+        <p style="font-size:1.15rem;color:#94a3b8;margin-bottom:2.5rem;line-height:1.6;">
+          Say goodbye to manual phone calls and double bookings. View live interactive schedules, lock instant slots, and pay securely in seconds.
+        </p>
+
+        <!-- Quick Search Bar -->
+        <div class="card" style="background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.15);padding:1.5rem;text-align:left;">
+          <div class="grid grid-cols-4 gap-3">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="color:#cbd5e1;font-size:0.8rem;">SPORT</label>
+              <select id="hero-sport-select" class="form-control" style="background:var(--secondary);color:#fff;border-color:rgba(255,255,255,0.2);">
+                <option value="ALL">All Sports</option>
+                <option value="FOOTBALL">⚽ Football / Futsal</option>
+                <option value="CRICKET">🏏 Box Cricket</option>
+                <option value="BADMINTON">🏸 Badminton</option>
+                <option value="TENNIS">🎾 Tennis</option>
+                <option value="PICKLEBALL">🏓 Pickleball</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="color:#cbd5e1;font-size:0.8rem;">CITY / AREA</label>
+              <select id="hero-city-select" class="form-control" style="background:var(--secondary);color:#fff;border-color:rgba(255,255,255,0.2);">
+                <option value="Mumbai">Mumbai (BKC, Bandra, Andheri, Juhu, Powai)</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="color:#cbd5e1;font-size:0.8rem;">DATE</label>
+              <input type="date" id="hero-date-input" class="form-control" style="background:var(--secondary);color:#fff;border-color:rgba(255,255,255,0.2);">
+            </div>
+
+            <div style="display:flex;align-items:flex-end;">
+              <button class="btn btn-primary btn-block" style="height:42px;" onclick="window.location.href='venues.html'">
+                Search Turfs &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Featured Venues Section -->
+  <section style="padding:4.5rem 0;background:var(--bg-main);">
+    <div class="container">
+      <div class="section-header flex justify-between items-center" style="flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h2 class="section-title">Featured Sports Arenas & Turfs</h2>
+          <p class="section-subtitle">Top-rated facilities with automated real-time calendar tracking</p>
+        </div>
+        <a href="venues.html" class="btn btn-outline">View All Venues &rarr;</a>
+      </div>
+
+      <div class="grid grid-cols-3 gap-6" id="featured-venues-grid">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Value Pillars -->
+  <section style="padding:4.5rem 0;background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div style="text-align:center;max-width:650px;margin:0 auto 3.5rem;">
+        <span class="badge badge-amber" style="margin-bottom:0.75rem;">Why TurfSync?</span>
+        <h2 class="section-title">Built to Eliminate Friction for Players & Owners</h2>
+      </div>
+
+      <div class="grid grid-cols-3 gap-8">
+        <div class="card">
+          <div style="font-size:2.2rem;margin-bottom:1rem;">⚡</div>
+          <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;color:var(--secondary);">Zero Double-Bookings</h3>
+          <p style="color:var(--text-muted);font-size:0.925rem;line-height:1.6;">
+            Atomic concurrency locking guarantees slots are temporarily held during Stripe checkout. No two players can ever book the same hour.
+          </p>
+        </div>
+
+        <div class="card">
+          <div style="font-size:2.2rem;margin-bottom:1rem;">🔔</div>
+          <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;color:var(--secondary);">Waitlist Auto-Alerts</h3>
+          <p style="color:var(--text-muted);font-size:0.925rem;line-height:1.6;">
+            Slot taken? Join the 1-click waitlist. If the original player cancels, the next player in line gets an instant priority claim window.
+          </p>
+        </div>
+
+        <div class="card">
+          <div style="font-size:2.2rem;margin-bottom:1rem;">💳</div>
+          <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;color:var(--secondary);">Fair Tiered Refunds</h3>
+          <p style="color:var(--text-muted);font-size:0.925rem;line-height:1.6;">
+            Transparent cancellation engine. Enjoy 100% automated refunds when canceling >24 hours prior, powered directly by Stripe.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="logo" style="margin-bottom:1rem;">
+            <div class="logo-icon">⚡</div>
+            <div>Turf<span>Sync</span></div>
+          </div>
+          <p style="font-size:0.9rem;line-height:1.6;">
+            The modern sports turf and court reservation management platform. Empowering players and sports facility owners.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-title">For Players</h4>
+          <ul class="footer-links">
+            <li><a href="venues.html">Browse Turfs</a></li>
+            <li><a href="booking.html?venue=venue-1">Book Football Slot</a></li>
+            <li><a href="my-bookings.html">Manage Bookings</a></li>
+            <li><a href="my-bookings.html">Refund Policy</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">For Facility Owners</h4>
+          <ul class="footer-links">
+            <li><a href="admin-dashboard.html">Admin Dashboard</a></li>
+            <li><a href="admin-pricing.html">Dynamic Pricing Rules</a></li>
+            <li><a href="admin-analytics.html">Occupancy Heatmaps</a></li>
+            <li><a href="admin-dashboard.html">Offline Cash Bookings</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Contact & Support</h4>
+          <p style="font-size:0.875rem;margin-bottom:0.75rem;">Need help with a court booking or onboarding your arena?</p>
+          <a href="mailto:support@turfsync.com" class="btn btn-outline-primary btn-sm">support@turfsync.com</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 TurfSync Platform. All rights reserved.</div>
+        <div style="display:flex;gap:1.5rem;">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/mock-data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set today's date in hero datepicker
+      const todayStr = new Date().toISOString().split('T')[0];
+      const dateInput = document.getElementById('hero-date-input');
+      if (dateInput) dateInput.value = todayStr;
+
+      // Render featured venues
+      const venues = TurfStorage.getVenues();
+      const grid = document.getElementById('featured-venues-grid');
+      if (grid) {
+        grid.innerHTML = venues.map(venue => {
+          const startingRate = Math.min(...venue.courts.map(c => c.baseRate));
+          const sportsBadges = venue.sports.map(s => `<span class="badge badge-green">${s}</span>`).join(' ');
+
+          return `
+            <div class="card card-clickable" onclick="window.location.href='booking.html?venue=${venue.id}'" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
+              <div style="height:200px;position:relative;background-color:#1e293b;">
+                <img src="${venue.image}" alt="${venue.name}" style="width:100%;height:100%;object-fit:cover;">
+                <div style="position:absolute;top:1rem;right:1rem;">
+                  <span class="badge badge-amber" style="box-shadow:var(--shadow-md);">⭐ ${venue.rating} (${venue.reviewCount})</span>
+                </div>
+              </div>
+
+              <div style="padding:1.5rem;display:flex;flex-direction:column;flex-grow:1;">
+                <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+                  ${sportsBadges}
+                </div>
+                <h3 style="font-size:1.2rem;font-weight:700;color:var(--secondary);margin-bottom:0.35rem;">${venue.name}</h3>
+                <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">📍 ${venue.address}, ${venue.city}</p>
+                
+                <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:1rem;">
+                  <div>
+                    <span style="font-size:0.75rem;color:var(--text-muted);display:block;">Starting from</span>
+                    <span style="font-weight:800;font-size:1.15rem;color:var(--primary-dark);">₹${startingRate}/hr</span>
+                  </div>
+                  <a href="booking.html?venue=${venue.id}" class="btn btn-primary btn-sm">Book Slots &rarr;</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    });
+  </script>
+</body>
+</html>

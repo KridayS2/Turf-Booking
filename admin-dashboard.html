@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurfSync | Facility Owner Admin Portal</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">⚡</div>
+        <div>Turf<span>Sync</span> <small style="font-size:0.75rem;font-weight:600;background:var(--primary-light);color:var(--primary-dark);padding:0.2rem 0.5rem;border-radius:4px;margin-left:0.4rem;">ADMIN</small></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">&larr; Switch to Player View</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <span class="badge badge-green">Facility Owner Account</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Admin Layout -->
+  <div class="admin-layout">
+    
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <label style="font-size:0.75rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:0.4rem;">SELECT FACILITY</label>
+        <select id="admin-venue-select" class="sidebar-venue-select">
+          <!-- Injected via TurfAdmin -->
+        </select>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li>
+          <a href="admin-dashboard.html" class="sidebar-link active">
+            <span class="sidebar-icon">📊</span>
+            <span>Live Overview</span>
+          </a>
+        </li>
+        <li>
+          <a href="admin-pricing.html" class="sidebar-link">
+            <span class="sidebar-icon">⚡</span>
+            <span>Dynamic Pricing</span>
+          </a>
+        </li>
+        <li>
+          <a href="admin-analytics.html" class="sidebar-link">
+            <span class="sidebar-icon">📈</span>
+            <span>Occupancy Heatmaps</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div style="font-size:0.775rem;color:#94a3b8;">Direct Owner Tooling</div>
+        <div style="font-size:0.85rem;font-weight:700;color:#fff;margin-top:0.2rem;">Zero Aggregator Fees</div>
+      </div>
+    </aside>
+
+    <!-- Admin Main Body -->
+    <main class="admin-main">
+      <div class="admin-header">
+        <div class="admin-title-group">
+          <h1>Facility Operations Dashboard</h1>
+          <p>Real-time slot utilization, revenue tracking, and instant offline booking management.</p>
+        </div>
+
+        <div>
+          <button class="btn btn-primary" onclick="TurfAdmin.openAddOfflineModal('court-1')">
+            + Quick Offline Cash Booking
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-content">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value" id="kpi-revenue">₹0</div>
+            <div class="stat-subtext">Automated Stripe Deposits</div>
+          </div>
+          <div class="stat-icon-wrapper stat-icon-green">₹</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-content">
+            <div class="stat-label">Today's Revenue</div>
+            <div class="stat-value" id="kpi-today-revenue">₹0</div>
+            <div class="stat-subtext">Online & Walk-ins</div>
+          </div>
+          <div class="stat-icon-wrapper stat-icon-amber">📅</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-content">
+            <div class="stat-label">Total Reservations</div>
+            <div class="stat-value" id="kpi-bookings-count">0</div>
+            <div class="stat-subtext">Active & Confirmed</div>
+          </div>
+          <div class="stat-icon-wrapper stat-icon-blue">🎫</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-content">
+            <div class="stat-label">Court Utilization Rate</div>
+            <div class="stat-value" id="kpi-utilization">0%</div>
+            <div class="stat-subtext">Today's Peak Capacity</div>
+          </div>
+          <div class="stat-icon-wrapper stat-icon-purple">⚡</div>
+        </div>
+      </div>
+
+      <!-- Live Court Availability Matrix -->
+      <div class="matrix-container">
+        <div class="matrix-header">
+          <div>
+            <h2 style="font-size:1.25rem;font-weight:800;color:var(--secondary);">Live Court Availability & Maintenance Control</h2>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.2rem;">Quickly toggle court status or add manual counter bookings.</p>
+          </div>
+        </div>
+
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>Court & Sport</th>
+              <th>Status</th>
+              <th>Base Hourly Rate</th>
+              <th>Today's Occupancy</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="court-matrix-tbody">
+            <!-- Injected via TurfAdmin -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Active Dynamic Surge Rules Overview -->
+      <div class="matrix-container">
+        <div class="matrix-header">
+          <div>
+            <h2 style="font-size:1.25rem;font-weight:800;color:var(--secondary);">Configured Dynamic Pricing Multipliers</h2>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.2rem;">Automated surges applied during peak rush hours.</p>
+          </div>
+          <a href="admin-pricing.html" class="btn btn-outline-primary btn-sm">Manage Rules &rarr;</a>
+        </div>
+
+        <div id="pricing-rules-list">
+          <!-- Injected via TurfAdmin -->
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Offline Booking Modal (Native Dialog) -->
+  <dialog id="offline-booking-modal" class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Offline Walk-in Reservation</h3>
+      <button class="modal-close-btn" onclick="TurfUI.closeModal('offline-booking-modal')">&times;</button>
+    </div>
+    <form id="offline-booking-form">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Select Court</label>
+          <select id="off-court-id" class="form-control" required>
+            <!-- Injected via TurfAdmin -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" id="off-date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <select id="off-time" class="form-control" required>
+              <option value="06:00">6:00 AM</option>
+              <option value="07:00">7:00 AM</option>
+              <option value="08:00">8:00 AM</option>
+              <option value="16:00">4:00 PM</option>
+              <option value="17:00">5:00 PM</option>
+              <option value="18:00" selected>6:00 PM</option>
+              <option value="19:00">7:00 PM</option>
+              <option value="20:00">8:00 PM</option>
+              <option value="21:00">9:00 PM</option>
+              <option value="22:00">10:00 PM</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Customer Name</label>
+          <input type="text" id="off-user-name" class="form-control" placeholder="e.g. Walk-in Captain" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Customer Mobile</label>
+          <input type="tel" id="off-user-phone" class="form-control" placeholder="+91 99999 00000" required>
+        </div>
+
+        <div style="background:var(--bg-subtle);padding:0.75rem 1rem;border-radius:var(--radius-md);font-size:0.8rem;color:var(--text-muted);">
+          💵 Collected as <strong>Cash / Counter Payment</strong>. Concurrency lock will immediately reserve this slot.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="TurfUI.closeModal('offline-booking-modal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Confirm Offline Booking</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Scripts -->
+  <script src="js/mock-data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      TurfAdmin.init();
+    });
+  </script>
+</body>
+</html>

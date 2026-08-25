@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurfSync | Secure Checkout & Payment</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">⚡</div>
+        <div>Turf<span>Sync</span></div>
+      </a>
+
+      <div style="font-size:0.85rem;color:#cbd5e1;display:flex;align-items:center;gap:0.5rem;">
+        <span>🔒 256-Bit SSL Encrypted Checkout</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Checkout Container -->
+  <main style="padding:3rem 0 5rem;background:var(--bg-main);flex-grow:1;">
+    <div class="container" style="max-width:960px;">
+
+      <!-- Payment Step View -->
+      <div id="checkout-step-payment" class="grid grid-cols-2 gap-8">
+        
+        <!-- Left: Slot Summary & Policy -->
+        <div>
+          <div class="card" style="margin-bottom:1.5rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+              <h2 style="font-size:1.25rem;font-weight:800;color:var(--secondary);">Booking Review</h2>
+              <span class="badge badge-green">Slot Locked (5 Mins)</span>
+            </div>
+
+            <div id="checkout-items-list">
+              <!-- Injected via TurfBookingFlow -->
+            </div>
+
+            <!-- Price Breakdown Table -->
+            <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);">
+              <div style="display:flex;justify-content:space-between;font-size:0.9rem;margin-bottom:0.5rem;color:var(--text-muted);">
+                <span>Subtotal</span>
+                <span id="summary-subtotal">₹0</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.9rem;margin-bottom:0.75rem;color:var(--text-muted);">
+                <span>GST & Arena Maintenance (18%)</span>
+                <span id="summary-tax">₹0</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:1.25rem;font-weight:800;color:var(--secondary);border-top:1px solid var(--border);padding-top:0.75rem;">
+                <span>Total Amount</span>
+                <span id="summary-total" style="color:var(--primary-dark);">₹0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tiered Cancellation Disclosure Box -->
+          <div class="card" style="background:#f8fafc;border-left:4px solid var(--primary);">
+            <h4 style="font-size:0.95rem;font-weight:700;color:var(--secondary);margin-bottom:0.5rem;">🛡️ Automated Refund Guarantee</h4>
+            <ul style="font-size:0.85rem;color:var(--text-muted);list-style:none;display:flex;flex-direction:column;gap:0.35rem;">
+              <li>&bull; <strong>100% Refund</strong> if cancelled >24 hours prior to match time.</li>
+              <li>&bull; <strong>50% Refund</strong> if cancelled 12–24 hours prior.</li>
+              <li>&bull; Instant return to original Stripe payment source.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right: Stripe Payment Form -->
+        <div>
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1.5rem;">
+              <span style="font-size:1.35rem;">💳</span>
+              <h2 style="font-size:1.25rem;font-weight:800;color:var(--secondary);">Stripe Digital Payment</h2>
+            </div>
+
+            <form id="payment-form">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="payer-name" class="form-control" value="Alex Morgan" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Email Address (For Instant Ticket Pass)</label>
+                <input type="email" id="payer-email" class="form-control" value="alex.player@example.com" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="payer-phone" class="form-control" value="+91 98765 43210" required>
+              </div>
+
+              <div style="margin:1.5rem 0;padding:1.25rem;background:var(--bg-subtle);border-radius:var(--radius-md);border:1px solid var(--border);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+                  <span style="font-size:0.8rem;font-weight:700;color:var(--text-muted);">CARD DETAILS</span>
+                  <div style="display:flex;gap:0.4rem;">
+                    <span class="badge badge-gray">VISA</span>
+                    <span class="badge badge-gray">Mastercard</span>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0.75rem;">
+                  <input type="text" class="form-control" value="•••• •••• •••• 4242" readonly style="background:#fff;letter-spacing:0.1em;font-family:monospace;">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" class="form-control" value="12/28" readonly style="background:#fff;font-family:monospace;">
+                  <input type="text" class="form-control" value="•••" readonly style="background:#fff;font-family:monospace;">
+                </div>
+              </div>
+
+              <button type="submit" id="pay-submit-btn" class="btn btn-primary btn-lg btn-block" style="margin-top:1rem;">
+                Pay & Confirm Reservation &rarr;
+              </button>
+
+              <div style="text-align:center;margin-top:1rem;font-size:0.775rem;color:var(--text-muted);">
+                Powered by Stripe Elements &bull; Instant Confirmation
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Success Confirmation View (Hidden by default) -->
+      <div id="checkout-step-success" style="display:none;max-width:650px;margin:0 auto;text-align:center;">
+        <div class="card" style="padding:2.5rem 2rem;">
+          <div style="width:4rem;height:4rem;background:var(--primary-light);color:var(--primary-dark);font-size:2rem;font-weight:bold;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
+            ✓
+          </div>
+          <h2 style="font-size:1.85rem;font-weight:800;color:var(--secondary);margin-bottom:0.5rem;">Booking Confirmed!</h2>
+          <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:2rem;">
+            Your sports turf slot has been successfully reserved. A confirmation receipt has been sent to your email.
+          </p>
+
+          <div id="confirmation-bookings-list" style="text-align:left;">
+            <!-- Injected via TurfBookingFlow -->
+          </div>
+
+          <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;">
+            <a href="my-bookings.html" class="btn btn-primary">View in My Bookings</a>
+            <a href="index.html" class="btn btn-outline">Back to Home</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>&copy; 2026 TurfSync Platform.</div>
+        <div>Stripe Verified Merchant Platform</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/mock-data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/booking-flow.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      TurfBookingFlow.initCheckout();
+    });
+  </script>
+</body>
+</html>

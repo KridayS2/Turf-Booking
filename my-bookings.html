@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurfSync | Player Bookings & Refund Manager</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">⚡</div>
+        <div>Turf<span>Sync</span></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="venues.html" class="nav-link">Explore Venues</a></li>
+        <li><a href="booking.html?venue=venue-1" class="nav-link">Book Turf</a></li>
+        <li><a href="my-bookings.html" class="nav-link active">My Bookings</a></li>
+        <li><a href="admin-dashboard.html" class="nav-link" style="color:var(--primary);">Facility Owner Portal &rarr;</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="venues.html" class="btn btn-primary btn-sm">+ New Reservation</a>
+        <button class="mobile-menu-btn" aria-label="Toggle menu">&#9776;</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Player Header -->
+  <header style="background:var(--secondary);color:var(--text-inverse);padding:2.5rem 0;">
+    <div class="container flex justify-between items-center" style="flex-wrap:wrap;gap:1rem;">
+      <div>
+        <h1 style="font-size:2rem;font-weight:800;letter-spacing:-0.02em;">My Reservations</h1>
+        <p style="color:#94a3b8;font-size:0.95rem;margin-top:0.25rem;">
+          Track upcoming court passes, manage cancellations with instant Stripe refunds, and rate arenas.
+        </p>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <div style="width:2.5rem;height:2.5rem;background:var(--primary);color:var(--secondary);border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-weight:800;">
+          AM
+        </div>
+        <div>
+          <div style="font-weight:700;color:#fff;">Alex Morgan</div>
+          <div style="font-size:0.8rem;color:#94a3b8;">alex.player@example.com</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Bookings Listing -->
+  <main style="padding:3rem 0;background:var(--bg-main);flex-grow:1;">
+    <div class="container" style="max-width:960px;">
+      
+      <!-- Filter Tabs -->
+      <div style="display:flex;gap:1rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:0.75rem;">
+        <button class="btn btn-sm btn-primary" id="tab-upcoming" onclick="filterBookings('UPCOMING')">Upcoming Reservations</button>
+        <button class="btn btn-sm btn-outline" id="tab-all" onclick="filterBookings('ALL')">All History & Cancelled</button>
+      </div>
+
+      <div id="bookings-list-container" class="flex flex-col gap-4">
+        <!-- Injected via JavaScript -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Tiered Cancellation & Refund Modal (Native Dialog) -->
+  <dialog id="cancel-modal" class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Cancel Reservation</h3>
+      <button class="modal-close-btn" onclick="TurfUI.closeModal('cancel-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.9rem;color:var(--text-muted);">
+        Review the cancellation details and calculated refund for this booking.
+      </p>
+
+      <input type="hidden" id="cancel-booking-id">
+
+      <!-- Dynamic Live Refund Box -->
+      <div class="refund-preview-box" id="refund-preview-content">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Reason for Cancellation (Optional)</label>
+        <select id="cancel-reason" class="form-control">
+          <option value="Schedule Conflict">Schedule Conflict</option>
+          <option value="Weather / Rain Issues">Weather / Rain Issues</option>
+          <option value="Player Injury">Player Injury</option>
+          <option value="Other">Other Reason</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="TurfUI.closeModal('cancel-modal')">Keep Booking</button>
+      <button class="btn btn-danger" onclick="confirmCancellation()">Confirm Cancellation & Process Refund</button>
+    </div>
+  </dialog>
+
+  <!-- Review & Rating Modal (Native Dialog) -->
+  <dialog id="review-modal" class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Rate & Review Venue</h3>
+      <button class="modal-close-btn" onclick="TurfUI.closeModal('review-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="review-venue-id">
+      <input type="hidden" id="review-booking-id">
+
+      <h4 id="review-venue-name" style="color:var(--secondary);font-size:1.1rem;margin-bottom:0.5rem;">Apex Arena</h4>
+
+      <div class="form-group">
+        <label class="form-label">Your Rating</label>
+        <div class="star-rating" id="star-rating-container">
+          <span class="star selected" data-value="1">★</span>
+          <span class="star selected" data-value="2">★</span>
+          <span class="star selected" data-value="3">★</span>
+          <span class="star selected" data-value="4">★</span>
+          <span class="star selected" data-value="5">★</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Share your experience (Turf condition, lighting, amenities)</label>
+        <textarea id="review-comment" class="form-control" rows="3" placeholder="Lighting was awesome and turf grass was top quality!"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="TurfUI.closeModal('review-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+    </div>
+  </dialog>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>&copy; 2026 TurfSync Platform.</div>
+        <div>Automated Booking & Cancellation Engine</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/mock-data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    let currentFilter = 'UPCOMING';
+    let selectedRating = 5;
+
+    function renderBookings() {
+      const container = document.getElementById('bookings-list-container');
+      if (!container) return;
+
+      const bookings = TurfStorage.getBookings(); // all bookings for user
+
+      let displayList = bookings;
+      if (currentFilter === 'UPCOMING') {
+        displayList = bookings.filter(b => b.status === 'CONFIRMED');
+      }
+
+      if (displayList.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align:center;padding:3rem 1.5rem;">
+            <p style="font-size:1.1rem;color:var(--text-muted);margin-bottom:1rem;">No bookings found in this view.</p>
+            <a href="venues.html" class="btn btn-primary">Book a Court Now &rarr;</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = displayList.map(b => {
+        const isConfirmed = b.status === 'CONFIRMED';
+        const isCancelled = b.status === 'CANCELLED';
+        const refundInfo = TurfStorage.calculateRefund(b);
+
+        return `
+          <div class="card" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.25rem;">
+            <div>
+              <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
+                <span class="badge ${isConfirmed ? 'badge-green' : 'badge-red'}">${b.status}</span>
+                <span style="font-family:monospace;font-size:0.85rem;color:var(--text-muted);font-weight:700;">#${b.id}</span>
+                ${b.isRecurring ? '<span class="badge badge-blue">Recurring Slot</span>' : ''}
+              </div>
+
+              <h3 style="font-size:1.25rem;font-weight:700;color:var(--secondary);margin-bottom:0.25rem;">${b.courtName}</h3>
+              <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:0.6rem;">📍 ${b.venueName} &bull; ⚽ ${b.sport}</p>
+
+              <div style="font-size:0.925rem;font-weight:600;color:var(--primary-dark);margin-bottom:0.5rem;">
+                📅 ${TurfUI.formatDate(b.date)} &bull; ⏰ ${TurfUI.formatTime(b.startTime)} - ${TurfUI.formatTime(b.endTime || '20:00')}
+              </div>
+
+              <div style="font-size:0.85rem;color:var(--secondary-muted);">
+                Payment: <strong>${b.paymentMethod || 'Stripe Digital Card'}</strong> &bull; Total: <strong>₹${b.totalAmount.toLocaleString('en-IN')}</strong>
+              </div>
+
+              ${isCancelled ? `
+                <div style="margin-top:0.6rem;font-size:0.85rem;color:var(--accent-red);background:var(--accent-red-light);padding:0.4rem 0.75rem;border-radius:var(--radius-sm);">
+                  Cancelled on ${TurfUI.formatDate(b.cancelledAt?.split('T')[0] || b.date)}. Refund: <strong>₹${(b.refundAmount || 0).toLocaleString('en-IN')} (${b.refundPercent || 0}%)</strong>
+                </div>
+              ` : ''}
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:0.6rem;align-items:flex-end;">
+              ${isConfirmed ? `
+                <button class="btn btn-outline btn-sm" style="color:var(--accent-red);border-color:rgba(239,68,68,0.4);" onclick="openCancelModal('${b.id}')">
+                  Cancel Booking
+                </button>
+                <button class="btn btn-outline-primary btn-sm" onclick="openReviewModal('${b.venueId}', '${b.id}', '${b.venueName}')">
+                  ⭐ Write Review
+                </button>
+              ` : `
+                <a href="booking.html?venue=${b.venueId}" class="btn btn-primary btn-sm">Book Again</a>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterBookings(filter) {
+      currentFilter = filter;
+      document.getElementById('tab-upcoming').className = filter === 'UPCOMING' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline';
+      document.getElementById('tab-all').className = filter === 'ALL' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline';
+      renderBookings();
+    }
+
+    function openCancelModal(bookingId) {
+      const booking = TurfStorage.getBookingById(bookingId);
+      if (!booking) return;
+
+      document.getElementById('cancel-booking-id').value = bookingId;
+      const refund = TurfStorage.calculateRefund(booking);
+
+      const content = document.getElementById('refund-preview-content');
+      content.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.85rem;color:var(--text-muted);">Hours until match start:</span>
+          <strong style="color:var(--secondary);">${refund.diffHours} hrs</strong>
+        </div>
+        <div class="refund-tier-active">
+          <div>
+            <div style="font-weight:700;color:var(--primary-dark);">${refund.tierLabel}</div>
+            <div style="font-size:0.775rem;color:var(--primary-dark);">Original Total: ₹${booking.totalAmount.toLocaleString('en-IN')}</div>
+          </div>
+          <div class="refund-rate">₹${refund.refundAmount.toLocaleString('en-IN')}</div>
+        </div>
+        <p style="font-size:0.775rem;color:var(--text-muted);">
+          Refunds are automatically issued back to your original payment card via Stripe within 2-3 business days.
+        </p>
+      `;
+
+      TurfUI.openModal('cancel-modal');
+    }
+
+    function confirmCancellation() {
+      const bookingId = document.getElementById('cancel-booking-id').value;
+      const reason = document.getElementById('cancel-reason').value;
+
+      const result = TurfStorage.cancelBooking(bookingId, reason);
+      if (result) {
+        TurfUI.closeModal('cancel-modal');
+        renderBookings();
+        TurfUI.showToast(`✓ Booking cancelled. Stripe Refund of ₹${result.refundInfo.refundAmount.toLocaleString('en-IN')} initiated!`, 'success');
+      }
+    }
+
+    function openReviewModal(venueId, bookingId, venueName) {
+      document.getElementById('review-venue-id').value = venueId;
+      document.getElementById('review-booking-id').value = bookingId;
+      document.getElementById('review-venue-name').textContent = venueName;
+      TurfUI.openModal('review-modal');
+    }
+
+    function submitReview() {
+      const venueId = document.getElementById('review-venue-id').value;
+      const comment = document.getElementById('review-comment').value.trim();
+
+      TurfStorage.addReview({
+        venueId,
+        userName: 'Alex Morgan',
+        rating: selectedRating,
+        comment: comment || 'Great turf facility and seamless automated booking!'
+      });
+
+      TurfUI.closeModal('review-modal');
+      TurfUI.showToast('✓ Thank you! Your review has been published.', 'success');
+    }
+
+    // Setup star rating clicks
+    document.querySelectorAll('#star-rating-container .star').forEach(star => {
+      star.addEventListener('click', (e) => {
+        selectedRating = parseInt(e.target.dataset.value);
+        document.querySelectorAll('#star-rating-container .star').forEach((s, idx) => {
+          if (idx < selectedRating) s.classList.add('selected');
+          else s.classList.remove('selected');
+        });
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', renderBookings);
+  </script>
+</body>
+</html>

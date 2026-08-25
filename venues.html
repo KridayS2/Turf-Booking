@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurfSync | Explore Sports Venues & Courts</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">⚡</div>
+        <div>Turf<span>Sync</span></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="venues.html" class="nav-link active">Explore Venues</a></li>
+        <li><a href="booking.html?venue=venue-1" class="nav-link">Book Turf</a></li>
+        <li><a href="my-bookings.html" class="nav-link">My Bookings</a></li>
+        <li><a href="admin-dashboard.html" class="nav-link" style="color:var(--primary);">Facility Owner Portal &rarr;</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="booking.html?venue=venue-1" class="btn btn-primary">Quick Book</a>
+        <button class="mobile-menu-btn" aria-label="Toggle menu">&#9776;</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Venue Explorer Header -->
+  <header style="background:var(--secondary);color:var(--text-inverse);padding:3rem 0;">
+    <div class="container">
+      <h1 style="font-size:2.25rem;font-weight:800;letter-spacing:-0.02em;">Sports Arenas & Turfs</h1>
+      <p style="color:#94a3b8;font-size:1rem;margin-top:0.35rem;">
+        Discover and book certified artificial grass turfs, indoor badminton arenas, and floodlit cricket pitches.
+      </p>
+
+      <!-- Filter Controls Bar -->
+      <div class="card" style="margin-top:2rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);padding:1.25rem;">
+        <div class="grid grid-cols-4 gap-3">
+          <div>
+            <label class="form-label" style="color:#cbd5e1;font-size:0.75rem;">SEARCH VENUE NAME</label>
+            <input type="text" id="venue-search-input" placeholder="e.g. Apex BKC, Andheri West, Juhu..." class="form-control" style="background:var(--secondary);color:#fff;border-color:rgba(255,255,255,0.2);">
+          </div>
+
+          <div>
+            <label class="form-label" style="color:#cbd5e1;font-size:0.75rem;">SPORT</label>
+            <select id="sport-filter-select" class="form-control" style="background:var(--secondary);color:#fff;border-color:rgba(255,255,255,0.2);">
+              <option value="ALL">All Sports</option>
+              <option value="FOOTBALL">Football / Futsal</option>
+              <option value="CRICKET">Box Cricket</option>
+              <option value="BADMINTON">Badminton</option>
+              <option value="TENNIS">Tennis</option>
+              <option value="PICKLEBALL">Pickleball</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label" style="color:#cbd5e1;font-size:0.75rem;">SORT BY</label>
+            <select id="sort-select" class="form-control" style="background:var(--secondary);color:#fff;border-color:rgba(255,255,255,0.2);">
+              <option value="rating">Highest Rated</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
+
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn btn-primary btn-block" style="height:42px;" onclick="renderVenuesList()">
+              Apply Filters
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Venues Listing Container -->
+  <main style="padding:3.5rem 0;background:var(--bg-main);flex-grow:1;">
+    <div class="container">
+      <div id="venues-count-label" style="font-size:0.9rem;font-weight:600;color:var(--text-muted);margin-bottom:1.5rem;">
+        Showing all available arenas
+      </div>
+
+      <div class="grid grid-cols-3 gap-6" id="venues-catalog-grid">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>&copy; 2026 TurfSync Platform.</div>
+        <div>Real-Time Multi-Venue Sports Scheduling</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/mock-data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    function renderVenuesList() {
+      const search = (document.getElementById('venue-search-input')?.value || '').toLowerCase();
+      const sport = document.getElementById('sport-filter-select')?.value || 'ALL';
+      const sortBy = document.getElementById('sort-select')?.value || 'rating';
+
+      let venues = TurfStorage.getVenues();
+
+      // Filter by search
+      if (search) {
+        venues = venues.filter(v => 
+          v.name.toLowerCase().includes(search) || 
+          v.address.toLowerCase().includes(search) || 
+          v.city.toLowerCase().includes(search)
+        );
+      }
+
+      // Filter by sport
+      if (sport !== 'ALL') {
+        venues = venues.filter(v => v.sports.includes(sport));
+      }
+
+      // Sort
+      venues.sort((a, b) => {
+        const minA = Math.min(...a.courts.map(c => c.baseRate));
+        const minB = Math.min(...b.courts.map(c => c.baseRate));
+        if (sortBy === 'price-asc') return minA - minB;
+        if (sortBy === 'price-desc') return minB - minA;
+        return b.rating - a.rating;
+      });
+
+      const countEl = document.getElementById('venues-count-label');
+      if (countEl) countEl.textContent = `Showing ${venues.length} sports arena${venues.length === 1 ? '' : 's'}`;
+
+      const grid = document.getElementById('venues-catalog-grid');
+      if (!grid) return;
+
+      if (venues.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1;text-align:center;padding:3rem 1rem;">
+            <p style="font-size:1.1rem;color:var(--text-muted);">No arenas found matching your search criteria.</p>
+            <button class="btn btn-outline-primary" style="margin-top:1rem;" onclick="document.getElementById('venue-search-input').value='';document.getElementById('sport-filter-select').value='ALL';renderVenuesList();">Reset Filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = venues.map(venue => {
+        const startingRate = Math.min(...venue.courts.map(c => c.baseRate));
+        const sportsBadges = venue.sports.map(s => `<span class="badge badge-green">${s}</span>`).join(' ');
+
+        return `
+          <div class="card card-clickable" onclick="window.location.href='booking.html?venue=${venue.id}'" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
+            <div style="height:210px;position:relative;background-color:#1e293b;">
+              <img src="${venue.image}" alt="${venue.name}" style="width:100%;height:100%;object-fit:cover;">
+              <div style="position:absolute;top:1rem;right:1rem;">
+                <span class="badge badge-amber" style="box-shadow:var(--shadow-md);">⭐ ${venue.rating} (${venue.reviewCount})</span>
+              </div>
+            </div>
+
+            <div style="padding:1.5rem;display:flex;flex-direction:column;flex-grow:1;">
+              <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+                ${sportsBadges}
+              </div>
+              <h3 style="font-size:1.25rem;font-weight:700;color:var(--secondary);margin-bottom:0.35rem;">${venue.name}</h3>
+              <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;">📍 ${venue.address}, ${venue.city}</p>
+              <p style="font-size:0.875rem;color:var(--secondary-muted);line-height:1.5;margin-bottom:1.25rem;">${venue.tagline}</p>
+              
+              <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:1rem;">
+                <div>
+                  <span style="font-size:0.75rem;color:var(--text-muted);display:block;">Starting from</span>
+                  <span style="font-weight:800;font-size:1.15rem;color:var(--primary-dark);">₹${startingRate}/hr</span>
+                </div>
+                <a href="booking.html?venue=${venue.id}" class="btn btn-primary btn-sm">View Schedule &rarr;</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', renderVenuesList);
+  </script>
+</body>
+</html>
