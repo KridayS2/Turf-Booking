@@ -12,7 +12,7 @@ const DEFAULT_DATA = {
       description: "State-of-the-art sports arena in Bandra-Kurla Complex featuring FIFA 2-star certified artificial grass turf, floodlit courts, locker rooms, cafeteria, and ample parking.",
       address: "Plot 42, G-Block, Bandra-Kurla Complex (BKC)",
       city: "Mumbai",
-      sports: ["FOOTBALL", "CRICKET", "BADMINTON"],
+      sports: ["FOOTBALL", "CRICKET"],
       rating: 4.8,
       reviewCount: 124,
       image: "https://images.unsplash.com/photo-1529900245534-47fbfb57835a?auto=format&fit=crop&w=800&q=80",
